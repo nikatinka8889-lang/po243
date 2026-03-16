@@ -45,7 +45,6 @@ button:hover {
   background: #dfa400;
 }
 </style>
-
 </head>
 
 <body>
@@ -55,21 +54,12 @@ button:hover {
 
 <form id="feedbackForm">
 <input type="text" id="userName" placeholder="Ваше имя" required>
-
 <input type="email" id="userEmail" placeholder="Ваш Email" required>
-
 <button type="submit">Отправить в облако</button>
 </form>
-
 </div>
 
-</body>
-</html>
-
-
-
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
@@ -87,14 +77,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
-
   e.preventDefault();
 
   const nameInput = document.getElementById("userName").value;
   const emailInput = document.getElementById("userEmail").value;
 
   try {
-
     await addDoc(collection(db, "requests"), {
       name: nameInput,
       email: emailInput,
@@ -105,14 +93,11 @@ document.getElementById("feedbackForm").addEventListener("submit", async (e) => 
     document.getElementById("feedbackForm").reset();
 
   } catch (error) {
-
     console.error("Ошибка записи:", error);
     alert("Ошибка при отправке.");
-
   }
-
 });
-
 </script>
+
 </body>
 </html>
