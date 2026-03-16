@@ -64,11 +64,9 @@ button:hover {
 
 <script type="module">
 
-// Импортируем модули Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-// Конфигурация Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
   authDomain: "project1-930e4.firebaseapp.com",
@@ -79,11 +77,9 @@ const firebaseConfig = {
   measurementId: "G-Q12R8PWX8W"
 };
 
-// Инициализация
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Логика кнопки
 document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
 
   e.preventDefault();
@@ -93,7 +89,6 @@ document.getElementById("feedbackForm").addEventListener("submit", async (e) => 
 
   try {
 
-    // Запись в коллекцию "requests"
     await addDoc(collection(db, "requests"), {
       name: nameInput,
       email: emailInput,
@@ -101,39 +96,6 @@ document.getElementById("feedbackForm").addEventListener("submit", async (e) => 
     });
 
     alert("Данные отправлены!");
-    document.getElementById("feedbackForm").reset();
-
-  } catch (error) {
-
-    console.error("Ошибка записи:", error);
-    alert("Ошибка при отправке.");
-
-  }
-
-});
-
-// Инициализация
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Логика кнопки
-document.getElementById("feedbackForm").addEventListener("submit", async (e) => {
-
-  e.preventDefault();
-
-  const nameInput = document.getElementById("userName").value;
-  const emailInput = document.getElementById("userEmail").value;
-
-  try {
-
-    // Запись в коллекцию "requests"
-    await addDoc(collection(db, "requests"), {
-      name: nameInput,
-      email: emailInput,
-      timestamp: new Date()
-    });
-
-    alert("Готово! Данные сохранены в Firebase.");
     document.getElementById("feedbackForm").reset();
 
   } catch (error) {
