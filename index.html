@@ -1,19 +1,199 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <title>BaaS</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #f4f7f6; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { width: 100%; max-width: 500px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button#mainBtn { background: #007bff; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .post { background: #fff; border: 1px solid #eaeaea; padding: 15px; margin-top: 15px; border-radius: 8px; width: 100%; max-width: 500px; position: relative; }
-        .like-btn { cursor: pointer; border: none; background: #f8f9fa; padding: 5px 12px; border-radius: 20px; font-size: 14px; transition: 0.2s; }
-        .like-btn:hover { background: #e2e6ea; }
-        .time { font-size: 11px; color: #999; float: right; }
-    </style>
+    Классный код! Чтобы сделать его действительно «индивидуальным» и современным, я предлагаю отойти от стандартного вида форм и добавить в CSS немного Glassmorphism (стеклянного эффекта), мягких градиентов и приятных микро-взаимодействий.
+
+Вот обновленный блок <style>, который превратит твою страницу в стильное современное приложение:
+
+CSS
+<style>
+    :root {
+        --primary: #6366f1;
+        --primary-hover: #4f46e5;
+        --bg: #f8fafc;
+        --text-main: #1e293b;
+        --text-muted: #64748b;
+        --glass: rgba(255, 255, 255, 0.8);
+    }
+
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        color: var(--text-main);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    /* Контейнер панели управления */
+    .container {
+        width: 100%;
+        max-width: 450px;
+        background: var(--glass);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    h3 {
+        margin-top: 0;
+        font-size: 1.5rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #4f46e5, #9333ea);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        letter-spacing: -0.5px;
+    }
+
+    /* Поля ввода */
+    input {
+        width: 100%;
+        padding: 14px 16px;
+        margin: 10px 0;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        background: white;
+        font-size: 15px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-sizing: border-box;
+    }
+
+    input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        transform: translateY(-1px);
+    }
+
+    /* Кнопка публикации */
+    button#mainBtn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 16px;
+        border-radius: 14px;
+        width: 100%;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 15px;
+        transition: all 0.3s;
+        box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+    }
+
+    button#mainBtn:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+    }
+
+    button#mainBtn:active {
+        transform: translateY(0);
+    }
+
+    button#mainBtn:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Карточки постов */
+    .post {
+        background: white;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 450px;
+        border: 1px solid #f1f5f9;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+        animation: slideUp 0.5s ease-out forwards;
+    }
+
+    .post:hover {
+        transform: scale(1.02);
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .time {
+        font-size: 12px;
+        color: var(--text-muted);
+        background: #f1f5f9;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    .post b {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 4px;
+        color: var(--text-main);
+    }
+
+    .post p {
+        color: var(--text-muted);
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    /* Кнопка лайка */
+    .like-btn {
+        cursor: pointer;
+        border: 1px solid #e2e8f0;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-main);
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .like-btn:hover {
+        background: #f1f5f9;
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .like-btn:active {
+        transform: scale(0.9);
+    }
+
+    /* Скроллбар для красоты */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+</style>
 </head>
+
 <body>
 
     <div class="container">
@@ -27,21 +207,21 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import { 
-            getFirestore, collection, addDoc, query, orderBy, onSnapshot, 
-            serverTimestamp, updateDoc, doc, increment 
+        import {
+            getFirestore, collection, addDoc, query, orderBy, onSnapshot,
+            serverTimestamp, updateDoc, doc, increment
         } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
         // КОНФИГУРАЦИЯ
         const firebaseConfig = {
-  apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
-  authDomain: "project1-930e4.firebaseapp.com",
-  projectId: "project1-930e4",
-  storageBucket: "project1-930e4.firebasestorage.app",
-  messagingSenderId: "752357361184",
-  appId: "1:752357361184:web:4fa4b101ccb3184e339e45",
-  measurementId: "G-Q12R8PWX8W"
-};
+            apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
+            authDomain: "project1-930e4.firebaseapp.com",
+            projectId: "project1-930e4",
+            storageBucket: "project1-930e4.firebasestorage.app",
+            messagingSenderId: "752357361184",
+            appId: "1:752357361184:web:4fa4b101ccb3184e339e45",
+            measurementId: "G-Q12R8PWX8W"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -51,8 +231,8 @@
             const docRef = doc(db, "requests", id);
             try {
                 await updateDoc(docRef, { likes: increment(1) });
-            } catch (e) { 
-                console.error("Validation Error:", e.message); 
+            } catch (e) {
+                console.error("Validation Error:", e.message);
             }
         };
 
@@ -68,8 +248,8 @@
                     timestamp: serverTimestamp()
                 });
                 document.getElementById('email').value = "";
-            } catch (e) { 
-                alert("Ошибка безопасности: Данные отклонены сервером."); 
+            } catch (e) {
+                alert("Ошибка безопасности: Данные отклонены сервером.");
             }
             btn.disabled = false;
         };
@@ -93,4 +273,5 @@
         });
     </script>
 </body>
+
 </html>
