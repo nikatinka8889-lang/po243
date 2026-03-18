@@ -3,10 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>BaaS</title>
-
-
-
+    <title>BaaS Cloud Dashboard</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -14,85 +11,84 @@
             --bg: #f8fafc;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --glass: rgba(255, 255, 255, 0.8);
+            --glass: rgba(255, 255, 255, 0.85);
+            --border: rgba(226, 232, 240, 0.8);
         }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            background: radial-gradient(circle at top right, #eef2ff, #f1f5f9);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             min-height: 100vh;
             margin: 0;
         }
 
-        /* Контейнер панели управления */
         .container {
             width: 100%;
             max-width: 450px;
             background: var(--glass);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 28px;
+            border: 1px solid white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
         }
 
         h3 {
-            margin-top: 0;
-            font-size: 1.5rem;
+            margin: 0 0 25px 0;
+            font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(to right, #4f46e5, #9333ea);
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-align: center;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.025em;
         }
 
-        /* Поля ввода */
         input {
             width: 100%;
-            padding: 14px 16px;
-            margin: 10px 0;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
+            padding: 14px 18px;
+            margin: 12px 0;
+            border: 1px solid var(--border);
+            border-radius: 14px;
             background: white;
             font-size: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             box-sizing: border-box;
+            color: var(--text-main);
         }
 
         input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-            transform: translateY(-1px);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: #fff;
         }
 
-        /* Кнопка публикации */
         button#mainBtn {
             background: var(--primary);
             color: white;
             border: none;
             padding: 16px;
-            border-radius: 14px;
+            border-radius: 16px;
             width: 100%;
             font-weight: 700;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s;
-            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+            margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
         }
 
         button#mainBtn:hover {
             background: var(--primary-hover);
             transform: translateY(-2px);
-            box-shadow: 0 20px 25px -5px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 15px 25px -5px rgba(99, 102, 241, 0.5);
         }
 
         button#mainBtn:active {
@@ -101,102 +97,94 @@
 
         button#mainBtn:disabled {
             background: #cbd5e1;
-            cursor: not-allowed;
-            transform: none;
             box-shadow: none;
+            cursor: not-allowed;
         }
 
-        /* Карточки постов */
         .post {
             background: white;
-            padding: 20px;
+            padding: 24px;
             margin-top: 20px;
-            border-radius: 20px;
+            border-radius: 24px;
             width: 100%;
             max-width: 450px;
-            border: 1px solid #f1f5f9;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-            animation: slideUp 0.5s ease-out forwards;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            position: relative;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .post:hover {
-            transform: scale(1.02);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .time {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 500;
+            background: #f8fafc;
+            padding: 5px 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            position: absolute;
+            top: 24px;
+            right: 24px;
         }
 
         .post b {
             display: block;
-            font-size: 18px;
-            margin-bottom: 4px;
+            font-size: 1.15rem;
+            margin-bottom: 6px;
             color: var(--text-main);
+            padding-right: 80px;
         }
 
         .post p {
             color: var(--text-muted);
             font-size: 14px;
-            word-break: break-all;
+            margin: 0 0 18px 0;
+            line-height: 1.5;
         }
 
-        /* Кнопка лайка */
         .like-btn {
             cursor: pointer;
-            border: 1px solid #e2e8f0;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 14px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-main);
-            transition: all 0.2s;
-            display: flex;
+            transition: all 0.2s ease;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 10px;
+            gap: 10px;
         }
 
         .like-btn:hover {
-            background: #f1f5f9;
             border-color: var(--primary);
+            background: #f5f3ff;
             color: var(--primary);
+            transform: scale(1.05);
         }
 
         .like-btn:active {
-            transform: scale(0.9);
+            transform: scale(0.95);
         }
 
-        /* Скроллбар для красоты */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
+            background: #d1d5db;
+            border-radius: 20px;
+            border: 3px solid transparent;
+            background-clip: content-box;
         }
     </style>
 </head>
@@ -204,13 +192,13 @@
 <body>
 
     <div class="container">
-        <h3>Панель управления данными</h3>
-        <input type="text" id="name" placeholder="Имя профиля">
-        <input type="email" id="email" placeholder="Рабочий Email">
-        <button id="mainBtn">Опубликовать в облако</button>
+        <h3>Облачная панель</h3>
+        <input type="text" id="name" placeholder="Ваше имя">
+        <input type="email" id="email" placeholder="Электронная почта">
+        <button id="mainBtn">Опубликовать данные</button>
     </div>
 
-    <div id="feed" style="width: 100%; max-width: 500px;"></div>
+    <div id="feed" style="width: 100%; max-width: 450px;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
@@ -219,7 +207,6 @@
             serverTimestamp, updateDoc, doc, increment
         } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-        // КОНФИГУРАЦИЯ
         const firebaseConfig = {
             apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
             authDomain: "project1-930e4.firebaseapp.com",
@@ -233,7 +220,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // МЕТОД: АТОМАРНОЕ ОБНОВЛЕНИЕ (LIKES)
         window.processLike = async (id) => {
             const docRef = doc(db, "requests", id);
             try {
@@ -243,25 +229,29 @@
             }
         };
 
-        // МЕТОД: ЗАПИСЬ С ВАЛИДАЦИЕЙ
         document.getElementById('mainBtn').onclick = async () => {
             const btn = document.getElementById('mainBtn');
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            if(!name || !email) return alert("Заполните все поля!");
+
             btn.disabled = true;
             try {
                 await addDoc(collection(db, "requests"), {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
+                    name: name,
+                    email: email,
                     likes: 0,
                     timestamp: serverTimestamp()
                 });
                 document.getElementById('email').value = "";
+                document.getElementById('name').value = "";
             } catch (e) {
                 alert("Ошибка безопасности: Данные отклонены сервером.");
             }
             btn.disabled = false;
         };
 
-        // МЕТОД: REAL-TIME СИНХРОНИЗАЦИЯ
         const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
         onSnapshot(q, (snapshot) => {
             const feed = document.getElementById('feed');
@@ -270,10 +260,13 @@
                 const data = doc.data();
                 feed.innerHTML += `
                     <div class="post">
-                        <span class="time">${data.timestamp?.toDate().toLocaleTimeString() || '...'}</span>
+                        <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || '...'}</span>
                         <b>${data.name}</b>
-                        <p style="margin: 5px 0;">${data.email}</p>
-                        <button class="like-btn" onclick="processLike('${doc.id}')">👍 ${data.likes || 0}</button>
+                        <p>${data.email}</p>
+                        <button class="like-btn" onclick="processLike('${doc.id}')">
+                            <span>👍</span> 
+                            <span>${data.likes || 0}</span>
+                        </button>
                     </div>
                 `;
             });
