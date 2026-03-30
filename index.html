@@ -4,18 +4,136 @@
     <meta charset="UTF-8">
     <title>BaaS Cloud Dashboard</title>
     <style>
-        /* ... (Ваши стили без изменений) ... */
-        :root { --primary: #6366f1; --primary-hover: #4f46e5; --bg: #f8fafc; --text-main: #1e293b; --text-muted: #64748b; --glass: rgba(255, 255, 255, 0.85); --border: rgba(226, 232, 240, 0.8); }
-        body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top right, #eef2ff, #f1f5f9); color: var(--text-main); display: flex; flex-direction: column; align-items: center; padding: 60px 20px; min-height: 100vh; margin: 0; }
-        .container { width: 100%; max-width: 450px; background: var(--glass); backdrop-filter: blur(12px); padding: 35px; border-radius: 28px; border: 1px solid white; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); margin-bottom: 40px; }
-        h3 { margin: 0 0 25px 0; font-size: 1.6rem; font-weight: 800; background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; }
-        input { width: 100%; padding: 14px 18px; margin: 12px 0; border: 1px solid var(--border); border-radius: 14px; background: white; font-size: 15px; box-sizing: border-box; }
-        button#mainBtn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 16px; width: 100%; font-weight: 700; cursor: pointer; margin-top: 20px; transition: all 0.3s ease; }
-        .post { background: white; padding: 24px; margin-top: 20px; border-radius: 24px; width: 100%; max-width: 450px; border: 1px solid var(--border); position: relative; animation: slideIn 0.6s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .time { font-size: 11px; color: var(--text-muted); background: #f8fafc; padding: 5px 12px; border-radius: 10px; position: absolute; top: 24px; right: 24px; }
-        .like-btn { cursor: pointer; border: 1px solid var(--border); background: #fff; padding: 10px 20px; border-radius: 14px; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; transition: all 0.2s; }
-        #searchInput { border-color: var(--primary); background: #f5f3ff; }
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass: rgba(255, 255, 255, 0.85);
+            --border: rgba(226, 232, 240, 0.8);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at top right, #eef2ff, #f1f5f9);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 35px;
+            border-radius: 28px;
+            border: 1px solid white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+
+        h3 {
+            margin: 0 0 25px 0;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            margin: 12px 0;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: white;
+            font-size: 15px;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        button#mainBtn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            width: 100%;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        #searchInput {
+            margin-top: 20px;
+            border-color: var(--primary);
+            background: #f5f3ff;
+        }
+
+        .post {
+            background: white;
+            padding: 24px;
+            margin-top: 20px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid var(--border);
+            position: relative;
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .time {
+            font-size: 11px;
+            color: var(--text-muted);
+            background: #f8fafc;
+            padding: 5px 12px;
+            border-radius: 10px;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+        }
+
+        .post b { display: block; font-size: 1.15rem; margin-bottom: 6px; padding-right: 80px; }
+        .post p { color: var(--text-muted); font-size: 14px; margin: 0 0 18px 0; }
+
+        .btn-group { display: flex; gap: 10px; }
+
+        .like-btn {
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .like-btn:hover { background: #f5f3ff; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -50,42 +168,46 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // --- Глобальные функции (через window для доступа из HTML) ---
+        // --- Глобальные функции ---
 
         window.processLike = async (id) => {
-            const docRef = doc(db, "requests", id);
             try {
-                await updateDoc(docRef, { likes: increment(1) });
-            } catch (e) { console.error("Ошибка лайка:", e); }
+                await updateDoc(doc(db, "requests", id), { likes: increment(1) });
+            } catch (e) { console.error(e); }
         };
 
         window.deletePost = async (id) => {
             if (!confirm("Вы уверены, что хотите удалить эту запись?")) return;
             try {
-                await deleteDoc(docRef(id)); 
-                // Примечание: Мы используем doc(db, "requests", id) напрямую
+                // ИСПРАВЛЕНО: Прямое использование doc() без лишних переменных
                 await deleteDoc(doc(db, "requests", id));
             } catch (e) {
-                alert("Ошибка: Возможно, у вас нет прав на удаление.");
+                console.error(e);
+                alert("Ошибка: Проверьте правила (Rules) в консоли Firebase.");
             }
         };
 
         // --- Логика добавления ---
 
         document.getElementById('mainBtn').onclick = async () => {
+            const btn = document.getElementById('mainBtn');
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
+
             if(!name || !email) return alert("Заполните поля!");
 
+            btn.disabled = true;
             try {
                 await addDoc(collection(db, "requests"), {
                     name, email, likes: 0, timestamp: serverTimestamp()
                 });
                 document.getElementById('name').value = "";
                 document.getElementById('email').value = "";
-            } catch (e) { alert("Ошибка сохранения"); }
+            } catch (e) { alert("Ошибка при сохранении!"); }
+            btn.disabled = false;
         };
 
+        // --- Логика ленты и поиска ---
 
         let currentDocs = [];
         const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
@@ -107,7 +229,7 @@
                             <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || '...'}</span>
                             <b>${data.name}</b>
                             <p>${data.email}</p>
-                            <div style="display: flex; gap: 10px;">
+                            <div class="btn-group">
                                 <button class="like-btn" onclick="processLike('${docSnap.id}')">
                                     👍 <span>${data.likes || 0}</span>
                                 </button>
