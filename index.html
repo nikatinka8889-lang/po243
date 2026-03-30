@@ -35,7 +35,7 @@
             border-radius: 28px;
             border: 1px solid white;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 40px;
+            margin-bottom: 15px; /* Немного уменьшил отступ */
         }
 
         h3 {
@@ -84,6 +84,35 @@
             margin-top: 20px;
             border-color: var(--primary);
             background: #f5f3ff;
+        }
+
+        /* --- НОВЫЕ СТИЛИ ДЛЯ КНОПОК СОРТИРОВКИ --- */
+        .sort-box {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            max-width: 450px;
+            margin-bottom: 20px;
+        }
+
+        .sort-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: 0.3s;
+            color: var(--text-muted);
+        }
+
+        .sort-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
         .post {
@@ -146,6 +175,11 @@
         <input type="text" id="searchInput" placeholder="🔍 Поиск по имени...">
     </div>
 
+    <div class="sort-box">
+        <button class="sort-btn active" id="btnNew">🕒 Новые</button>
+        <button class="sort-btn" id="btnHot">🔥 Популярные</button>
+    </div>
+
     <div id="feed" style="width: 100%; max-width: 450px;"></div>
 
     <script type="module">
@@ -179,43 +213,45 @@
         window.deletePost = async (id) => {
             if (!confirm("Вы уверены, что хотите удалить эту запись?")) return;
             try {
-                // ИСПРАВЛЕНО: Прямое использование doc() без лишних переменных
                 await deleteDoc(doc(db, "requests", id));
-            } catch (e) {
-                console.error(e);
-                alert("Ошибка: Проверьте правила (Rules) в консоли Firebase.");
-            }
+            } catch (e) { console.error(e); }
         };
 
         // --- Логика добавления ---
 
         document.getElementById('mainBtn').onclick = async () => {
-            const btn = document.getElementById('mainBtn');
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-
             if(!name || !email) return alert("Заполните поля!");
 
-            btn.disabled = true;
+            document.getElementById('mainBtn').disabled = true;
             try {
                 await addDoc(collection(db, "requests"), {
                     name, email, likes: 0, timestamp: serverTimestamp()
                 });
                 document.getElementById('name').value = "";
                 document.getElementById('email').value = "";
-            } catch (e) { alert("Ошибка при сохранении!"); }
-            btn.disabled = false;
+            } catch (e) { alert("Ошибка сохранения!"); }
+            document.getElementById('mainBtn').disabled = false;
         };
 
-        // --- Логика ленты и поиска ---
+        // --- ЛОГИКА СОРТИРОВКИ И ОБНОВЛЕНИЯ ЛЕНТЫ ---
 
         let currentDocs = [];
-        const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
+        let unsubscribe = null; // Переменная для остановки старой подписки
 
-        onSnapshot(q, (snapshot) => {
-            currentDocs = snapshot.docs;
-            renderFeed(document.getElementById('searchInput').value.toLowerCase());
-        });
+        // Главная функция запуска прослушивания базы
+        function startSync(sortField) {
+            // Если мы уже слушали базу с другой сортировкой - отключаемся
+            if (unsubscribe) unsubscribe();
+
+            const q = query(collection(db, "requests"), orderBy(sortField, "desc"));
+
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                currentDocs = snapshot.docs;
+                renderFeed(document.getElementById('searchInput').value.toLowerCase());
+            });
+        }
 
         function renderFeed(filter = "") {
             const feed = document.getElementById('feed');
@@ -243,9 +279,28 @@
             });
         }
 
+        // --- ОБРАБОТКА КНОПОК СОРТИРОВКИ ---
+
+        document.getElementById('btnNew').onclick = () => {
+            document.getElementById('btnNew').classList.add('active');
+            document.getElementById('btnHot').classList.remove('active');
+            startSync("timestamp"); // Сортируем по времени
+        };
+
+        document.getElementById('btnHot').onclick = () => {
+            document.getElementById('btnHot').classList.add('active');
+            document.getElementById('btnNew').classList.remove('active');
+            startSync("likes"); // Сортируем по количеству лайков
+        };
+
+        // Поиск
         document.getElementById('searchInput').oninput = (e) => {
             renderFeed(e.target.value.toLowerCase());
         };
+
+        // Запуск приложения (по умолчанию "Новые")
+        startSync("timestamp");
+
     </script>
 </body>
 </html>
