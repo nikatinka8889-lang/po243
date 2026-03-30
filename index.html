@@ -86,7 +86,6 @@
             } catch (e) { alert("Ошибка сохранения"); }
         };
 
-        // --- Логика отображения и поиска ---
 
         let currentDocs = [];
         const q = query(collection(db, "requests"), orderBy("timestamp", "desc"));
