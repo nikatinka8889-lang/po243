@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>BaaS Cloud Dashboard + Enhanced Security</title>
+    <title>BaaS Cloud Dashboard - URL Only</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -44,7 +44,7 @@
         .hidden { display: none !important; }
         h3 { margin: 0 0 20px 0; font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--primary); }
 
-        input, .file-input {
+        input {
             width: 100%; padding: 12px 16px; margin: 8px 0; border: 1px solid var(--border);
             border-radius: 12px; background: white; font-size: 14px; box-sizing: border-box;
         }
@@ -54,6 +54,7 @@
         #mainBtn, #loginBtn {
             background: var(--primary); color: white; padding: 14px; width: 100%;
             box-shadow: 0 8px 15px -5px rgba(99, 102, 241, 0.4);
+            margin-top: 10px;
         }
 
         #logoutBtn { background: #fee2e2; color: #ef4444; padding: 6px 12px; font-size: 12px; }
@@ -71,10 +72,6 @@
         .time { font-size: 11px; color: var(--text-muted); position: absolute; top: 20px; right: 20px; }
         .btn-group { display: flex; gap: 8px; margin-top: 10px; }
         .like-btn { background: #f1f5f9; padding: 8px 16px; font-size: 13px; }
-        
-        .divider { text-align: center; margin: 10px 0; font-size: 12px; color: var(--text-muted); position: relative; }
-        .divider::before { content: ""; position: absolute; width: 40%; height: 1px; background: var(--border); left: 0; top: 50%; }
-        .divider::after { content: ""; position: absolute; width: 40%; height: 1px; background: var(--border); right: 0; top: 50%; }
     </style>
 </head>
 <body>
@@ -93,10 +90,8 @@
         <input type="email" id="email" placeholder="Контактная почта">
         
         <div style="margin-top: 10px;">
-            <label style="font-size: 12px; color: var(--text-muted);">Способ добавления фото:</label>
-            <input type="file" id="imageFile" accept="image/*" class="file-input">
-            <div class="divider">ИЛИ</div>
-            <input type="text" id="imageUrlInput" placeholder="Вставьте прямую ссылку на фото (URL)">
+            <label style="font-size: 12px; color: var(--text-muted);">Ссылка на изображение:</label>
+            <input type="text" id="imageUrlInput" placeholder="https://example.com/photo.jpg">
         </div>
 
         <button id="mainBtn">Опубликовать</button>
@@ -114,7 +109,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
         import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, doc, increment, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
+        // Firebase Storage больше не импортируем, так как файлы не грузим
 
         const firebaseConfig = {
             apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
@@ -128,24 +123,22 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
-        const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
 
         // --- ЗАЩИТА КОНСОЛИ ---
-        // Эти функции доступны глобально, но теперь они проверяют auth ПЕРЕД запросом
         window.processLike = async (id) => {
-            if (!auth.currentUser) return alert("Консольная атака заблокирована: Войдите в аккаунт!");
+            if (!auth.currentUser) return alert("Войдите в аккаунт!");
             try {
                 await updateDoc(doc(db, "requests", id), { likes: increment(1) });
-            } catch (e) { console.error("Ошибка доступа:", e.message); }
+            } catch (e) { console.error("Ошибка:", e.message); }
         };
 
         window.deletePost = async (id) => {
-            if (!auth.currentUser) return alert("Консольная атака заблокирована: У вас нет прав!");
+            if (!auth.currentUser) return alert("Нет прав!");
             if (!confirm("Удалить запись?")) return;
             try {
                 await deleteDoc(doc(db, "requests", id));
-            } catch (e) { console.error("Ошибка доступа:", e.message); }
+            } catch (e) { console.error("Ошибка:", e.message); }
         };
 
         // --- АВТОРИЗАЦИЯ ---
@@ -177,7 +170,6 @@
         document.getElementById('mainBtn').onclick = async () => {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-            const file = document.getElementById('imageFile').files[0];
             const manualUrl = document.getElementById('imageUrlInput').value;
             
             if(!name || !email) return alert("Заполните имя и почту!");
@@ -186,31 +178,23 @@
             document.getElementById('mainBtn').innerText = "Публикация...";
 
             try {
-                let finalImageUrl = manualUrl; // Сначала берем URL из поля
-
-                // Если выбран файл, он в приоритете (загружаем в Storage)
-                if (file) {
-                    const storageRef = ref(storage, `images/${Date.now()}_${file.name}`);
-                    await uploadBytes(storageRef, file);
-                    finalImageUrl = await getDownloadURL(storageRef);
-                }
-
+                // Теперь просто используем текст из инпута как URL
                 await addDoc(collection(db, "requests"), {
-                    name, email, 
-                    imageUrl: finalImageUrl, 
+                    name, 
+                    email, 
+                    imageUrl: manualUrl, 
                     likes: 0, 
                     timestamp: serverTimestamp(),
                     uid: auth.currentUser.uid
                 });
 
-                // Очистка
-                ['name', 'email', 'imageFile', 'imageUrlInput'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el.type === 'file') el.value = null; else el.value = "";
+                // Очистка полей
+                ['name', 'email', 'imageUrlInput'].forEach(id => {
+                    document.getElementById(id).value = "";
                 });
 
             } catch (e) {
-                alert("Ошибка! Проверьте авторизацию или консоль.");
+                alert("Ошибка публикации!");
                 console.error(e);
             }
             document.getElementById('mainBtn').disabled = false;
@@ -241,7 +225,7 @@
                             <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '...'}</span>
                             <b>${data.name}</b>
                             <p>${data.email}</p>
-                            ${data.imageUrl ? `<img src="${data.imageUrl}" onerror="this.src='https://placehold.co/400x200?text=Ошибка+URL'">` : ''}
+                            ${data.imageUrl ? `<img src="${data.imageUrl}" onerror="this.src='https://placehold.co/400x200?text=Неверный+URL+изображения'">` : ''}
                             <div class="btn-group">
                                 <button class="like-btn" onclick="window.processLike('${docSnap.id}')">👍 ${data.likes || 0}</button>
                                 <button class="like-btn" style="color:#ef4444" onclick="window.deletePost('${docSnap.id}')">🗑️ Удалить</button>
