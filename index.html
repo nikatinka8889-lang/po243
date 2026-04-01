@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>BaaS Cloud Dashboard</title>
+    <title>BaaS Cloud Dashboard + Auth</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -21,173 +21,122 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             min-height: 100vh;
             margin: 0;
         }
+
+        /* Блок профиля */
+        .auth-bar {
+            width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: var(--glass);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid white;
+        }
+
+        .user-info { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
+        .user-info img { width: 32px; height: 32px; border-radius: 50%; }
 
         .container {
             width: 100%;
             max-width: 450px;
             background: var(--glass);
             backdrop-filter: blur(12px);
-            padding: 35px;
+            padding: 30px;
             border-radius: 28px;
             border: 1px solid white;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 15px; /* Немного уменьшил отступ */
-        }
-
-        h3 {
-            margin: 0 0 25px 0;
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-align: center;
-        }
-
-        input {
-            width: 100%;
-            padding: 14px 18px;
-            margin: 12px 0;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            background: white;
-            font-size: 15px;
-            transition: all 0.25s ease;
+            margin-bottom: 15px;
             box-sizing: border-box;
         }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-        }
+        .hidden { display: none !important; }
 
-        button#mainBtn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 16px;
+        h3 { margin: 0 0 20px 0; font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--primary); }
+
+        input, .file-input {
             width: 100%;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
-        }
-
-        #searchInput {
-            margin-top: 20px;
-            border-color: var(--primary);
-            background: #f5f3ff;
-        }
-
-        /* --- НОВЫЕ СТИЛИ ДЛЯ КНОПОК СОРТИРОВКИ --- */
-        .sort-box {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            max-width: 450px;
-            margin-bottom: 20px;
-        }
-
-        .sort-btn {
-            flex: 1;
-            padding: 10px;
+            padding: 12px 16px;
+            margin: 8px 0;
             border: 1px solid var(--border);
-            background: white;
             border-radius: 12px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: 0.3s;
-            color: var(--text-muted);
+            background: white;
+            font-size: 14px;
+            box-sizing: border-box;
         }
 
-        .sort-btn.active {
+        button {
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: 0.3s;
+            border: none;
+        }
+
+        #mainBtn, #loginBtn {
             background: var(--primary);
             color: white;
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+            padding: 14px;
+            width: 100%;
+            box-shadow: 0 8px 15px -5px rgba(99, 102, 241, 0.4);
         }
+
+        #logoutBtn { background: #fee2e2; color: #ef4444; padding: 6px 12px; font-size: 12px; }
+
+        .sort-box { display: flex; gap: 10px; width: 100%; max-width: 450px; margin-bottom: 20px; }
+        .sort-btn { flex: 1; padding: 10px; background: white; color: var(--text-muted); border: 1px solid var(--border); }
+        .sort-btn.active { background: var(--primary); color: white; }
 
         .post {
-            background: white;
-            padding: 24px;
-            margin-top: 20px;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 450px;
-            border: 1px solid var(--border);
-            position: relative;
-            animation: slideIn 0.6s ease;
+            background: white; padding: 20px; margin-top: 15px; border-radius: 20px;
+            width: 100%; max-width: 450px; border: 1px solid var(--border); position: relative;
+            box-sizing: border-box;
         }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .time {
-            font-size: 11px;
-            color: var(--text-muted);
-            background: #f8fafc;
-            padding: 5px 12px;
-            border-radius: 10px;
-            position: absolute;
-            top: 24px;
-            right: 24px;
-        }
-
-        .post b { display: block; font-size: 1.15rem; margin-bottom: 6px; padding-right: 80px; }
-        .post p { color: var(--text-muted); font-size: 14px; margin: 0 0 18px 0; }
-
-        .btn-group { display: flex; gap: 10px; }
-
-        .like-btn {
-            cursor: pointer;
-            border: 1px solid var(--border);
-            background: #fff;
-            padding: 10px 20px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-
-        .like-btn:hover { background: #f5f3ff; transform: scale(1.05); }
+        .post img { width: 100%; border-radius: 12px; margin-top: 10px; }
+        .time { font-size: 11px; color: var(--text-muted); position: absolute; top: 20px; right: 20px; }
+        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+        .like-btn { background: #f1f5f9; padding: 8px 16px; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h3>Облачная панель</h3>
-        <input type="text" id="name" placeholder="Ваше имя">
-        <input type="email" id="email" placeholder="Электронная почта">
-        <button id="mainBtn">Опубликовать данные</button>
-        <input type="text" id="searchInput" placeholder="🔍 Поиск по имени...">
+    <div class="auth-bar">
+        <div id="userInfo" class="user-info">
+            <span>Вы не вошли</span>
+        </div>
+        <button id="loginBtn">Войти через Google</button>
+        <button id="logoutBtn" class="hidden">Выйти</button>
+    </div>
+
+    <div class="container hidden" id="postForm">
+        <h3>Новая запись</h3>
+        <input type="text" id="name" placeholder="Заголовок/Имя">
+        <input type="email" id="email" placeholder="Контактная почта">
+        <label style="font-size: 12px; color: var(--text-muted); margin-left: 5px;">Прикрепить фото:</label>
+        <input type="file" id="imageFile" accept="image/*" class="file-input">
+        <button id="mainBtn">Опубликовать</button>
     </div>
 
     <div class="sort-box">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск..." style="flex: 2; margin: 0;">
         <button class="sort-btn active" id="btnNew">🕒 Новые</button>
-        <button class="sort-btn" id="btnHot">🔥 Популярные</button>
+        <button class="sort-btn" id="btnHot">🔥 ТОП</button>
     </div>
 
     <div id="feed" style="width: 100%; max-width: 450px;"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-        import {
-            getFirestore, collection, addDoc, query, orderBy, onSnapshot,
-            serverTimestamp, updateDoc, doc, increment, deleteDoc
-        } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, updateDoc, doc, increment, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyA6-WsTIti1eJ4XIwAZFy545cKtXQRxW-w",
@@ -195,58 +144,81 @@
             projectId: "project1-930e4",
             storageBucket: "project1-930e4.firebasestorage.app",
             messagingSenderId: "752357361184",
-            appId: "1:752357361184:web:4fa4b101ccb3184e339e45",
-            measurementId: "G-Q12R8PWX8W"
+            appId: "1:752357361184:web:4fa4b101ccb3184e339e45"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
+        const storage = getStorage(app);
+        const provider = new GoogleAuthProvider();
 
-        // --- Глобальные функции ---
+        // --- УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ ---
 
-        window.processLike = async (id) => {
-            try {
-                await updateDoc(doc(db, "requests", id), { likes: increment(1) });
-            } catch (e) { console.error(e); }
-        };
+        document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
+        document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
-        window.deletePost = async (id) => {
-            if (!confirm("Вы уверены, что хотите удалить эту запись?")) return;
-            try {
-                await deleteDoc(doc(db, "requests", id));
-            } catch (e) { console.error(e); }
-        };
+        onAuthStateChanged(auth, (user) => {
+            const form = document.getElementById('postForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userInfo = document.getElementById('userInfo');
 
-        // --- Логика добавления ---
+            if (user) {
+                form.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                userInfo.innerHTML = `<img src="${user.photoURL}"> <span>${user.displayName}</span>`;
+            } else {
+                form.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                userInfo.innerHTML = `<span>Войдите для записи</span>`;
+            }
+        });
+
+        // --- ЛОГИКА ЗАГРУЗКИ И ПУБЛИКАЦИИ ---
 
         document.getElementById('mainBtn').onclick = async () => {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
+            const file = document.getElementById('imageFile').files[0];
+            
             if(!name || !email) return alert("Заполните поля!");
-
+            
             document.getElementById('mainBtn').disabled = true;
+            document.getElementById('mainBtn').innerText = "Загрузка...";
+
             try {
+                let imageUrl = "";
+                if (file) {
+                    const storageRef = ref(storage, 'images/' + Date.now() + "_" + file.name);
+                    await uploadBytes(storageRef, file);
+                    imageUrl = await getDownloadURL(storageRef);
+                }
+
                 await addDoc(collection(db, "requests"), {
-                    name, email, likes: 0, timestamp: serverTimestamp()
+                    name, email, imageUrl, likes: 0, timestamp: serverTimestamp(),
+                    uid: auth.currentUser.uid // Сохраняем ID автора
                 });
+
                 document.getElementById('name').value = "";
-                document.getElementById('email').value = "";
-            } catch (e) { alert("Ошибка сохранения!"); }
+                document.getElementById('imageFile').value = "";
+            } catch (e) {
+                alert("Ошибка! Проверьте правила доступа.");
+            }
             document.getElementById('mainBtn').disabled = false;
+            document.getElementById('mainBtn').innerText = "Опубликовать";
         };
 
-        // --- ЛОГИКА СОРТИРОВКИ И ОБНОВЛЕНИЯ ЛЕНТЫ ---
+        // --- ЛЕНТА (СИНХРОНИЗАЦИЯ) ---
 
         let currentDocs = [];
-        let unsubscribe = null; // Переменная для остановки старой подписки
+        let unsubscribe = null;
 
-        // Главная функция запуска прослушивания базы
         function startSync(sortField) {
-            // Если мы уже слушали базу с другой сортировкой - отключаемся
             if (unsubscribe) unsubscribe();
-
             const q = query(collection(db, "requests"), orderBy(sortField, "desc"));
-
             unsubscribe = onSnapshot(q, (snapshot) => {
                 currentDocs = snapshot.docs;
                 renderFeed(document.getElementById('searchInput').value.toLowerCase());
@@ -256,22 +228,18 @@
         function renderFeed(filter = "") {
             const feed = document.getElementById('feed');
             feed.innerHTML = "";
-            
             currentDocs.forEach((docSnap) => {
                 const data = docSnap.data();
                 if (data.name.toLowerCase().includes(filter)) {
                     feed.innerHTML += `
                         <div class="post">
-                            <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || '...'}</span>
+                            <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '...'}</span>
                             <b>${data.name}</b>
                             <p>${data.email}</p>
+                            ${data.imageUrl ? `<img src="${data.imageUrl}">` : ''}
                             <div class="btn-group">
-                                <button class="like-btn" onclick="processLike('${docSnap.id}')">
-                                    👍 <span>${data.likes || 0}</span>
-                                </button>
-                                <button class="like-btn" style="color: #ef4444;" onclick="deletePost('${docSnap.id}')">
-                                    🗑️ Удалить
-                                </button>
+                                <button class="like-btn" onclick="window.processLike('${docSnap.id}')">👍 ${data.likes || 0}</button>
+                                <button class="like-btn" style="color:#ef4444" onclick="window.deletePost('${docSnap.id}')">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -279,28 +247,19 @@
             });
         }
 
-        // --- ОБРАБОТКА КНОПОК СОРТИРОВКИ ---
+        window.processLike = (id) => updateDoc(doc(db, "requests", id), { likes: increment(1) });
+        window.deletePost = (id) => confirm("Удалить?") && deleteDoc(doc(db, "requests", id));
 
-        document.getElementById('btnNew').onclick = () => {
-            document.getElementById('btnNew').classList.add('active');
-            document.getElementById('btnHot').classList.remove('active');
-            startSync("timestamp"); // Сортируем по времени
-        };
+        document.getElementById('btnNew').onclick = () => { startSync("timestamp"); toggleActive('btnNew'); };
+        document.getElementById('btnHot').onclick = () => { startSync("likes"); toggleActive('btnHot'); };
+        document.getElementById('searchInput').oninput = (e) => renderFeed(e.target.value.toLowerCase());
 
-        document.getElementById('btnHot').onclick = () => {
-            document.getElementById('btnHot').classList.add('active');
-            document.getElementById('btnNew').classList.remove('active');
-            startSync("likes"); // Сортируем по количеству лайков
-        };
+        function toggleActive(id) {
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
 
-        // Поиск
-        document.getElementById('searchInput').oninput = (e) => {
-            renderFeed(e.target.value.toLowerCase());
-        };
-
-        // Запуск приложения (по умолчанию "Новые")
         startSync("timestamp");
-
     </script>
 </body>
 </html>
