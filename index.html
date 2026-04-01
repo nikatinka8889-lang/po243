@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>BaaS Cloud Dashboard + Auth</title>
+    <title>BaaS Cloud Dashboard + Enhanced Security</title>
     <style>
         :root {
             --primary: #6366f1;
@@ -26,65 +26,33 @@
             margin: 0;
         }
 
-        /* Блок профиля */
         .auth-bar {
-            width: 100%;
-            max-width: 450px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px 20px;
-            background: var(--glass);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid white;
+            width: 100%; max-width: 450px; display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 20px; padding: 10px 20px;
+            background: var(--glass); border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid white;
         }
 
         .user-info { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
         .user-info img { width: 32px; height: 32px; border-radius: 50%; }
 
         .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            padding: 30px;
-            border-radius: 28px;
-            border: 1px solid white;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
-            margin-bottom: 15px;
-            box-sizing: border-box;
+            width: 100%; max-width: 450px; background: var(--glass); backdrop-filter: blur(12px);
+            padding: 30px; border-radius: 28px; border: 1px solid white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); margin-bottom: 15px; box-sizing: border-box;
         }
 
         .hidden { display: none !important; }
-
         h3 { margin: 0 0 20px 0; font-size: 1.5rem; font-weight: 800; text-align: center; color: var(--primary); }
 
         input, .file-input {
-            width: 100%;
-            padding: 12px 16px;
-            margin: 8px 0;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: white;
-            font-size: 14px;
-            box-sizing: border-box;
+            width: 100%; padding: 12px 16px; margin: 8px 0; border: 1px solid var(--border);
+            border-radius: 12px; background: white; font-size: 14px; box-sizing: border-box;
         }
 
-        button {
-            cursor: pointer;
-            border-radius: 12px;
-            font-weight: 700;
-            transition: 0.3s;
-            border: none;
-        }
+        button { cursor: pointer; border-radius: 12px; font-weight: 700; transition: 0.3s; border: none; }
 
         #mainBtn, #loginBtn {
-            background: var(--primary);
-            color: white;
-            padding: 14px;
-            width: 100%;
+            background: var(--primary); color: white; padding: 14px; width: 100%;
             box-shadow: 0 8px 15px -5px rgba(99, 102, 241, 0.4);
         }
 
@@ -99,10 +67,14 @@
             width: 100%; max-width: 450px; border: 1px solid var(--border); position: relative;
             box-sizing: border-box;
         }
-        .post img { width: 100%; border-radius: 12px; margin-top: 10px; }
+        .post img { width: 100%; border-radius: 12px; margin-top: 10px; max-height: 300px; object-fit: cover; }
         .time { font-size: 11px; color: var(--text-muted); position: absolute; top: 20px; right: 20px; }
         .btn-group { display: flex; gap: 8px; margin-top: 10px; }
         .like-btn { background: #f1f5f9; padding: 8px 16px; font-size: 13px; }
+        
+        .divider { text-align: center; margin: 10px 0; font-size: 12px; color: var(--text-muted); position: relative; }
+        .divider::before { content: ""; position: absolute; width: 40%; height: 1px; background: var(--border); left: 0; top: 50%; }
+        .divider::after { content: ""; position: absolute; width: 40%; height: 1px; background: var(--border); right: 0; top: 50%; }
     </style>
 </head>
 <body>
@@ -119,8 +91,14 @@
         <h3>Новая запись</h3>
         <input type="text" id="name" placeholder="Заголовок/Имя">
         <input type="email" id="email" placeholder="Контактная почта">
-        <label style="font-size: 12px; color: var(--text-muted); margin-left: 5px;">Прикрепить фото:</label>
-        <input type="file" id="imageFile" accept="image/*" class="file-input">
+        
+        <div style="margin-top: 10px;">
+            <label style="font-size: 12px; color: var(--text-muted);">Способ добавления фото:</label>
+            <input type="file" id="imageFile" accept="image/*" class="file-input">
+            <div class="divider">ИЛИ</div>
+            <input type="text" id="imageUrlInput" placeholder="Вставьте прямую ссылку на фото (URL)">
+        </div>
+
         <button id="mainBtn">Опубликовать</button>
     </div>
 
@@ -153,66 +131,93 @@
         const storage = getStorage(app);
         const provider = new GoogleAuthProvider();
 
-        // --- УПРАВЛЕНИЕ АВТОРИЗАЦИЕЙ ---
+        // --- ЗАЩИТА КОНСОЛИ ---
+        // Эти функции доступны глобально, но теперь они проверяют auth ПЕРЕД запросом
+        window.processLike = async (id) => {
+            if (!auth.currentUser) return alert("Консольная атака заблокирована: Войдите в аккаунт!");
+            try {
+                await updateDoc(doc(db, "requests", id), { likes: increment(1) });
+            } catch (e) { console.error("Ошибка доступа:", e.message); }
+        };
 
+        window.deletePost = async (id) => {
+            if (!auth.currentUser) return alert("Консольная атака заблокирована: У вас нет прав!");
+            if (!confirm("Удалить запись?")) return;
+            try {
+                await deleteDoc(doc(db, "requests", id));
+            } catch (e) { console.error("Ошибка доступа:", e.message); }
+        };
+
+        // --- АВТОРИЗАЦИЯ ---
         document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
         document.getElementById('logoutBtn').onclick = () => signOut(auth);
 
         onAuthStateChanged(auth, (user) => {
-            const form = document.getElementById('postForm');
-            const loginBtn = document.getElementById('loginBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const userInfo = document.getElementById('userInfo');
+            const elements = {
+                form: document.getElementById('postForm'),
+                login: document.getElementById('loginBtn'),
+                logout: document.getElementById('logoutBtn'),
+                info: document.getElementById('userInfo')
+            };
 
             if (user) {
-                form.classList.remove('hidden');
-                loginBtn.classList.add('hidden');
-                logoutBtn.classList.remove('hidden');
-                userInfo.innerHTML = `<img src="${user.photoURL}"> <span>${user.displayName}</span>`;
+                elements.form.classList.remove('hidden');
+                elements.login.classList.add('hidden');
+                elements.logout.classList.remove('hidden');
+                elements.info.innerHTML = `<img src="${user.photoURL}"> <span>${user.displayName}</span>`;
             } else {
-                form.classList.add('hidden');
-                loginBtn.classList.remove('hidden');
-                logoutBtn.classList.add('hidden');
-                userInfo.innerHTML = `<span>Войдите для записи</span>`;
+                elements.form.classList.add('hidden');
+                elements.login.classList.remove('hidden');
+                elements.logout.classList.add('hidden');
+                elements.info.innerHTML = `<span>Войдите для записи</span>`;
             }
         });
 
-        // --- ЛОГИКА ЗАГРУЗКИ И ПУБЛИКАЦИИ ---
-
+        // --- ПУБЛИКАЦИЯ ---
         document.getElementById('mainBtn').onclick = async () => {
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const file = document.getElementById('imageFile').files[0];
+            const manualUrl = document.getElementById('imageUrlInput').value;
             
-            if(!name || !email) return alert("Заполните поля!");
+            if(!name || !email) return alert("Заполните имя и почту!");
             
             document.getElementById('mainBtn').disabled = true;
-            document.getElementById('mainBtn').innerText = "Загрузка...";
+            document.getElementById('mainBtn').innerText = "Публикация...";
 
             try {
-                let imageUrl = "";
+                let finalImageUrl = manualUrl; // Сначала берем URL из поля
+
+                // Если выбран файл, он в приоритете (загружаем в Storage)
                 if (file) {
-                    const storageRef = ref(storage, 'images/' + Date.now() + "_" + file.name);
+                    const storageRef = ref(storage, `images/${Date.now()}_${file.name}`);
                     await uploadBytes(storageRef, file);
-                    imageUrl = await getDownloadURL(storageRef);
+                    finalImageUrl = await getDownloadURL(storageRef);
                 }
 
                 await addDoc(collection(db, "requests"), {
-                    name, email, imageUrl, likes: 0, timestamp: serverTimestamp(),
-                    uid: auth.currentUser.uid // Сохраняем ID автора
+                    name, email, 
+                    imageUrl: finalImageUrl, 
+                    likes: 0, 
+                    timestamp: serverTimestamp(),
+                    uid: auth.currentUser.uid
                 });
 
-                document.getElementById('name').value = "";
-                document.getElementById('imageFile').value = "";
+                // Очистка
+                ['name', 'email', 'imageFile', 'imageUrlInput'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el.type === 'file') el.value = null; else el.value = "";
+                });
+
             } catch (e) {
-                alert("Ошибка! Проверьте правила доступа.");
+                alert("Ошибка! Проверьте авторизацию или консоль.");
+                console.error(e);
             }
             document.getElementById('mainBtn').disabled = false;
             document.getElementById('mainBtn').innerText = "Опубликовать";
         };
 
-        // --- ЛЕНТА (СИНХРОНИЗАЦИЯ) ---
-
+        // --- ЛЕНТА ---
         let currentDocs = [];
         let unsubscribe = null;
 
@@ -236,19 +241,16 @@
                             <span class="time">${data.timestamp?.toDate().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}) || '...'}</span>
                             <b>${data.name}</b>
                             <p>${data.email}</p>
-                            ${data.imageUrl ? `<img src="${data.imageUrl}">` : ''}
+                            ${data.imageUrl ? `<img src="${data.imageUrl}" onerror="this.src='https://placehold.co/400x200?text=Ошибка+URL'">` : ''}
                             <div class="btn-group">
                                 <button class="like-btn" onclick="window.processLike('${docSnap.id}')">👍 ${data.likes || 0}</button>
-                                <button class="like-btn" style="color:#ef4444" onclick="window.deletePost('${docSnap.id}')">🗑️</button>
+                                <button class="like-btn" style="color:#ef4444" onclick="window.deletePost('${docSnap.id}')">🗑️ Удалить</button>
                             </div>
                         </div>
                     `;
                 }
             });
         }
-
-        window.processLike = (id) => updateDoc(doc(db, "requests", id), { likes: increment(1) });
-        window.deletePost = (id) => confirm("Удалить?") && deleteDoc(doc(db, "requests", id));
 
         document.getElementById('btnNew').onclick = () => { startSync("timestamp"); toggleActive('btnNew'); };
         document.getElementById('btnHot').onclick = () => { startSync("likes"); toggleActive('btnHot'); };
