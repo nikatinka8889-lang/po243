@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
-    <title>Premium Glass Chat</title>
+    <title>Cloud app</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --primary: #6366f1; 
+        :root {
+            --primary: #6366f1;
             --primary-light: #818cf8;
             --primary-dark: #4f46e5;
-            --bg: #f0f2f5; 
-            --glass: rgba(255, 255, 255, 0.75); 
+            --bg: #f0f2f5;
+            --glass: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.5);
             --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
-        body { 
-            font-family: 'Inter', sans-serif; 
+        body {
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 50%, #fef2f2 100%);
             background-attachment: fixed;
-            display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
             color: #1e293b;
         }
 
@@ -35,128 +43,268 @@
             border-radius: 24px;
         }
 
-        .auth-bar, .container, .chat-container { width: 100%; max-width: 460px; margin-bottom: 16px; }
+        .auth-bar,
+        .container,
+        .chat-container {
+            width: 100%;
+            max-width: 460px;
+            margin-bottom: 16px;
+        }
 
         /* Бар авторизации */
-        .auth-bar { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 12px 20px; border-radius: 40px;
+        .auth-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 40px;
         }
 
-        .hidden { display: none !important; }
+        .hidden {
+            display: none !important;
+        }
 
         /* Секция чата */
-        .chat-container { padding: 24px; border-radius: 32px; }
-        
-        .user-list { 
-            display: flex; gap: 14px; overflow-x: auto; padding: 4px 4px 12px 4px; 
-            scrollbar-width: none; /* Firefox */
-        }
-        .user-list::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-
-        .user-card { 
-            min-width: 72px; text-align: center; cursor: pointer; font-size: 11px; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-            opacity: 0.6; filter: grayscale(0.5);
-        }
-        .user-card.active { 
-            opacity: 1; filter: grayscale(0); transform: translateY(-4px) scale(1.05); 
-            font-weight: 600; color: var(--primary);
-        }
-        .user-card img { 
-            width: 52px; height: 52px; border-radius: 50%; 
-            border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
-            object-fit: cover; margin-bottom: 6px;
+        .chat-container {
+            padding: 24px;
+            border-radius: 32px;
         }
 
-        .chat-window { 
-            height: 320px; overflow-y: auto; background: rgba(255,255,255,0.3); 
-            border-radius: 20px; padding: 16px; margin-bottom: 16px;
-            display: flex; flex-direction: column; gap: 12px;
-            border: 1px solid rgba(255,255,255,0.3);
+        .user-list {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding: 4px 4px 12px 4px;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .user-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Chrome/Safari */
+
+        .user-card {
+            min-width: 72px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 0.6;
+            filter: grayscale(0.5);
+        }
+
+        .user-card.active {
+            opacity: 1;
+            filter: grayscale(0);
+            transform: translateY(-4px) scale(1.05);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .user-card img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            margin-bottom: 6px;
+        }
+
+        .chat-window {
+            height: 320px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             scrollbar-width: thin;
         }
 
-        .chat-window::-webkit-scrollbar { width: 4px; }
-        .chat-window::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
-
-        .msg { 
-            max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 14px; 
-            line-height: 1.5; animation: slideUp 0.3s ease-out; position: relative;
+        .chat-window::-webkit-scrollbar {
+            width: 4px;
         }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .msg.sent { 
-            align-self: flex-end; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; border-bottom-right-radius: 4px;
+        .chat-window::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .msg.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
             box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
-        .msg.received { 
-            align-self: flex-start; background: white; color: #334155; 
-            border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+
+        .msg.received {
+            align-self: flex-start;
+            background: white;
+            color: #334155;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        .chat-input-group { display: flex; gap: 10px; }
-        .chat-input-group input { 
-            flex: 1; padding: 12px 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8); 
-            background: rgba(255,255,255,0.5); outline: none; transition: 0.3s;
+        .chat-input-group {
+            display: flex;
+            gap: 10px;
         }
-        .chat-input-group input:focus { background: white; border-color: var(--primary-light); }
 
-        .chat-input-group button { 
-            background: var(--primary); color: white; border: none; width: 48px; 
-            border-radius: 16px; cursor: pointer; transition: 0.3s; font-size: 18px;
+        .chat-input-group input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .chat-input-group input:focus {
+            background: white;
+            border-color: var(--primary-light);
+        }
+
+        .chat-input-group button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 48px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 18px;
             box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
         }
-        .chat-input-group button:hover { transform: scale(1.05); background: var(--primary-dark); }
+
+        .chat-input-group button:hover {
+            transform: scale(1.05);
+            background: var(--primary-dark);
+        }
 
         /* Посты */
-        .container { padding: 24px; }
-        .container h3 { margin-top: 0; color: #475569; font-weight: 600; }
-        
+        .container {
+            padding: 24px;
+        }
+
+        .container h3 {
+            margin-top: 0;
+            color: #475569;
+            font-weight: 600;
+        }
+
         input[type="text"] {
-            width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.6);
-            outline: none; font-family: inherit;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.6);
+            outline: none;
+            font-family: inherit;
         }
 
-        .post { background: white; padding: 16px; border-radius: 24px; margin-bottom: 16px; transition: 0.3s; }
-        .post:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .post img { width: 100%; border-radius: 16px; margin-top: 12px; display: block; }
-        
-        #mainBtn { 
+        .post {
+            background: white;
+            padding: 16px;
+            border-radius: 24px;
+            margin-bottom: 16px;
+            transition: 0.3s;
+        }
+
+        .post:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .post img {
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 12px;
+            display: block;
+        }
+
+        #mainBtn {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white; border: none; padding: 14px; border-radius: 16px; 
-            font-weight: 600; cursor: pointer; width: 100%; transition: 0.3s;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
         }
-        #mainBtn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        #userInfo b { color: var(--primary); }
+        #mainBtn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        #userInfo b {
+            color: var(--primary);
+        }
     </style>
 </head>
+
 <body>
 
     <div class="auth-bar glass-panel">
         <div id="userInfo"><span>Инициализация...</span></div>
-        <button id="loginBtn" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:500;">Войти через Google</button>
-        <button id="logoutBtn" class="hidden" style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; padding:8px 16px; border-radius:30px; font-weight:500; cursor:pointer;">Выйти</button>
+        <button id="loginBtn"
+            style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:500;">Войти
+            через Google</button>
+        <button id="logoutBtn" class="hidden"
+            style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; padding:8px 16px; border-radius:30px; font-weight:500; cursor:pointer;">Выйти</button>
     </div>
 
     <div id="chatSection" class="chat-container glass-panel hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <h3 style="margin:0; font-size: 18px; letter-spacing: -0.5px;">Сообщения</h3>
-            <span id="chatWithTitle" style="font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Выберите контакт</span>
+            <span id="chatWithTitle"
+                style="font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Выберите
+                контакт</span>
         </div>
-        
+
         <div class="user-list" id="userList"></div>
-        
+
         <div class="chat-window" id="chatWindow">
-            <div style="text-align:center; color:#cbd5e1; margin-top:130px; font-size: 13px;">Выберите собеседника для начала чата</div>
+            <div style="text-align:center; color:#cbd5e1; margin-top:130px; font-size: 13px;">Выберите собеседника для
+                начала чата</div>
         </div>
 
         <div class="chat-input-group">
             <input type="text" id="chatInput" placeholder="Введите сообщение...">
-            <button id="sendChatBtn">🚀</button>
+            <button id="sendChatBtn"><img src="https://cdn-icons-png.flaticon.com/512/5323/5323605.png" alt="sms" width="30" height="30"></button>
         </div>
     </div>
 
@@ -205,7 +353,7 @@
                 document.getElementById('logoutBtn').classList.remove('hidden');
                 document.getElementById('chatSection').classList.remove('hidden');
                 document.getElementById('postForm').classList.remove('hidden');
-                
+
                 loadUsers();
                 loadFeed();
             } else {
@@ -228,7 +376,7 @@
                 snap.docs.forEach(uDoc => {
                     const u = uDoc.data();
                     if (u.uid === auth.currentUser.uid) return;
-                    
+
                     const div = document.createElement('div');
                     div.className = `user-card ${selectedUserId === u.uid ? 'active' : ''}`;
                     div.innerHTML = `<img src="${u.photo || 'https://placehold.co/100'}"><br>${u.name.split(' ')[0]}`;
@@ -236,7 +384,7 @@
                         selectedUserId = u.uid;
                         document.getElementById('chatWithTitle').innerText = `ЧАТ С: ${u.name}`;
                         loadMessages(u.uid);
-                        loadUsers(); 
+                        loadUsers();
                     };
                     list.appendChild(div);
                 });
@@ -247,7 +395,7 @@
             if (chatUnsubscribe) chatUnsubscribe();
             const myUid = auth.currentUser.uid;
             const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-            
+
             chatUnsubscribe = onSnapshot(q, (snap) => {
                 const win = document.getElementById('chatWindow');
                 win.innerHTML = "";
@@ -304,4 +452,5 @@
         };
     </script>
 </body>
+
 </html>
