@@ -33,7 +33,6 @@
             color: #1e293b;
         }
 
-        /* Универсальный стиль стекла */
         .glass-panel {
             background: var(--glass);
             backdrop-filter: blur(12px);
@@ -51,7 +50,6 @@
             margin-bottom: 16px;
         }
 
-        /* Бар авторизации */
         .auth-bar {
             display: flex;
             justify-content: space-between;
@@ -64,7 +62,7 @@
             display: none !important;
         }
 
-        /* Секция чата */
+        /* Чат */
         .chat-container {
             padding: 24px;
             border-radius: 32px;
@@ -76,14 +74,11 @@
             overflow-x: auto;
             padding: 4px 4px 12px 4px;
             scrollbar-width: none;
-            /* Firefox */
         }
 
         .user-list::-webkit-scrollbar {
             display: none;
         }
-
-        /* Chrome/Safari */
 
         .user-card {
             min-width: 72px;
@@ -124,16 +119,6 @@
             flex-direction: column;
             gap: 12px;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            scrollbar-width: thin;
-        }
-
-        .chat-window::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .chat-window::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
         }
 
         .msg {
@@ -143,19 +128,11 @@
             font-size: 14px;
             line-height: 1.5;
             animation: slideUp 0.3s ease-out;
-            position: relative;
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .msg.sent {
@@ -163,7 +140,6 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
             border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
         }
 
         .msg.received {
@@ -171,86 +147,78 @@
             background: white;
             color: #334155;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
+        /* КРАСИВАЯ КНОПКА И ВВОД */
         .chat-input-group {
             display: flex;
             gap: 10px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 8px 8px 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(5px);
         }
 
         .chat-input-group input {
             flex: 1;
-            padding: 12px 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            background: rgba(255, 255, 255, 0.5);
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .chat-input-group input:focus {
-            background: white;
-            border-color: var(--primary-light);
-        }
-
-        .chat-input-group button {
-            background: var(--primary);
-            color: white;
+            padding: 10px 0;
             border: none;
-            width: 48px;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 18px;
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
-        }
-
-        .chat-input-group button:hover {
-            transform: scale(1.05);
-            background: var(--primary-dark);
-        }
-
-        /* Посты */
-        .container {
-            padding: 24px;
-        }
-
-        .container h3 {
-            margin-top: 0;
-            color: #475569;
-            font-weight: 600;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            background: rgba(255, 255, 255, 0.6);
+            background: transparent;
             outline: none;
+            font-size: 14px;
+            color: #1e293b;
             font-family: inherit;
         }
 
+        .chat-input-group button {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .chat-input-group button:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .chat-input-group button svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: white;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transform: rotate(45deg) translate(-1px, 1px);
+            transition: 0.3s;
+        }
+
+        .chat-input-group button:hover svg {
+            transform: rotate(45deg) translate(2px, -2px);
+        }
+
+        /* Посты */
         .post {
             background: white;
             padding: 16px;
             border-radius: 24px;
             margin-bottom: 16px;
-            transition: 0.3s;
-        }
-
-        .post:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
         }
 
         .post img {
             width: 100%;
             border-radius: 16px;
             margin-top: 12px;
-            display: block;
         }
 
         #mainBtn {
@@ -262,16 +230,6 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: 0.3s;
-        }
-
-        #mainBtn:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        #userInfo b {
-            color: var(--primary);
         }
     </style>
 </head>
@@ -279,40 +237,33 @@
 <body>
 
     <div class="auth-bar glass-panel">
-        <div id="userInfo"><span>Инициализация...</span></div>
-        <button id="loginBtn"
-            style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:30px; cursor:pointer; font-weight:500;">Войти
-            через Google</button>
-        <button id="logoutBtn" class="hidden"
-            style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; padding:8px 16px; border-radius:30px; font-weight:500; cursor:pointer;">Выйти</button>
+        <div id="userInfo"><span>Загрузка...</span></div>
+        <button id="loginBtn" style="background:var(--primary); color:white; border:none; padding:10px 20px; border-radius:30px; cursor:pointer;">Войти</button>
+        <button id="logoutBtn" class="hidden" style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:none; padding:8px 16px; border-radius:30px; cursor:pointer;">Выйти</button>
     </div>
 
     <div id="chatSection" class="chat-container glass-panel hidden">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 style="margin:0; font-size: 18px; letter-spacing: -0.5px;">Сообщения</h3>
-            <span id="chatWithTitle"
-                style="font-size: 11px; color: #94a3b8; font-weight: 600; text-transform: uppercase;">Выберите
-                контакт</span>
+            <h3 style="margin:0; font-size: 18px;">Чат</h3>
+            <span id="chatWithTitle" style="font-size: 10px; color: #94a3b8; font-weight: 600;">ВЫБЕРИТЕ КОНТАКТ</span>
         </div>
-
         <div class="user-list" id="userList"></div>
-
         <div class="chat-window" id="chatWindow">
-            <div style="text-align:center; color:#cbd5e1; margin-top:130px; font-size: 13px;">Выберите собеседника для
-                начала чата</div>
+            <div style="text-align:center; color:#cbd5e1; margin-top:130px;">Выберите, кому написать</div>
         </div>
-
         <div class="chat-input-group">
-            <input type="text" id="chatInput" placeholder="Введите сообщение...">
-            <button id="sendChatBtn"><img src="https://cdn-icons-png.flaticon.com/512/5323/5323605.png" alt="sms" width="25" height="25"></button>
+            <input type="text" id="chatInput" placeholder="Ваше сообщение...">
+            <button id="sendChatBtn">
+                <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
         </div>
     </div>
 
     <div class="container glass-panel hidden" id="postForm">
-        <h3>Новая публикация</h3>
-        <input type="text" id="postName" placeholder="О чем вы думаете?">
-        <input type="text" id="postUrl" placeholder="Вставьте ссылку на фото (URL)">
-        <button id="mainBtn">Опубликовать в ленту</button>
+        <h3>Новый пост</h3>
+        <input type="text" id="postName" placeholder="Текст поста">
+        <input type="text" id="postUrl" placeholder="Ссылка на фото">
+        <button id="mainBtn">Опубликовать</button>
     </div>
 
     <div id="feed" style="width:100%; max-width:460px;"></div>
@@ -339,36 +290,23 @@
         let selectedUserId = null;
         let chatUnsubscribe = null;
 
-        // AUTH LOGIC
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                await setDoc(doc(db, "users", user.uid), {
-                    name: user.displayName,
-                    photo: user.photoURL,
-                    uid: user.uid
-                }, { merge: true });
-
+                await setDoc(doc(db, "users", user.uid), { name: user.displayName, photo: user.photoURL, uid: user.uid }, { merge: true });
                 document.getElementById('userInfo').innerHTML = `Привет, <b>${user.displayName.split(' ')[0]}</b>`;
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('chatSection').classList.remove('hidden');
-                document.getElementById('postForm').classList.remove('hidden');
-
-                loadUsers();
-                loadFeed();
+                ['loginBtn'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                ['logoutBtn', 'chatSection', 'postForm'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+                loadUsers(); loadFeed();
             } else {
                 document.getElementById('userInfo').innerText = "Вход не выполнен";
-                document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('chatSection').classList.add('hidden');
-                document.getElementById('postForm').classList.add('hidden');
+                ['loginBtn'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+                ['logoutBtn', 'chatSection', 'postForm'].forEach(id => document.getElementById(id).classList.add('hidden'));
             }
         });
 
         document.getElementById('loginBtn').onclick = () => signInWithPopup(auth, provider);
         document.getElementById('logoutBtn').onclick = () => signOut(auth).then(() => location.reload());
 
-        // CHAT LOGIC
         function loadUsers() {
             onSnapshot(collection(db, "users"), (snap) => {
                 const list = document.getElementById('userList');
@@ -376,16 +314,10 @@
                 snap.docs.forEach(uDoc => {
                     const u = uDoc.data();
                     if (u.uid === auth.currentUser.uid) return;
-
                     const div = document.createElement('div');
                     div.className = `user-card ${selectedUserId === u.uid ? 'active' : ''}`;
                     div.innerHTML = `<img src="${u.photo || 'https://placehold.co/100'}"><br>${u.name.split(' ')[0]}`;
-                    div.onclick = () => {
-                        selectedUserId = u.uid;
-                        document.getElementById('chatWithTitle').innerText = `ЧАТ С: ${u.name}`;
-                        loadMessages(u.uid);
-                        loadUsers();
-                    };
+                    div.onclick = () => { selectedUserId = u.uid; document.getElementById('chatWithTitle').innerText = `ЧАТ С: ${u.name.toUpperCase()}`; loadMessages(u.uid); loadUsers(); };
                     list.appendChild(div);
                 });
             });
@@ -395,7 +327,6 @@
             if (chatUnsubscribe) chatUnsubscribe();
             const myUid = auth.currentUser.uid;
             const q = query(collection(db, "messages"), orderBy("timestamp", "asc"));
-
             chatUnsubscribe = onSnapshot(q, (snap) => {
                 const win = document.getElementById('chatWindow');
                 win.innerHTML = "";
@@ -416,20 +347,14 @@
             const input = document.getElementById('chatInput');
             const text = input.value.trim();
             if (!text || !selectedUserId) return;
-            await addDoc(collection(db, "messages"), {
-                sender: auth.currentUser.uid,
-                receiver: selectedUserId,
-                text: text,
-                timestamp: serverTimestamp()
-            });
+            await addDoc(collection(db, "messages"), { sender: auth.currentUser.uid, receiver: selectedUserId, text: text, timestamp: serverTimestamp() });
             input.value = "";
         };
 
-        // FEED LOGIC
         function loadFeed() {
             onSnapshot(query(collection(db, "requests"), orderBy("timestamp", "desc")), (snap) => {
                 const feed = document.getElementById('feed');
-                feed.innerHTML = "<h3 style='text-align:center; color:#94a3b8; font-size:12px; margin: 20px 0;'>НЕДАВНИЕ ОБНОВЛЕНИЯ</h3>";
+                feed.innerHTML = "<h3 style='text-align:center; color:#94a3b8; font-size:12px;'>НОВОСТИ</h3>";
                 snap.docs.forEach(d => {
                     const p = d.data();
                     const postDiv = document.createElement('div');
@@ -444,13 +369,9 @@
             const n = document.getElementById('postName').value;
             const u = document.getElementById('postUrl').value;
             if (!n) return;
-            await addDoc(collection(db, "requests"), {
-                name: n, imageUrl: u, timestamp: serverTimestamp(), uid: auth.currentUser.uid
-            });
-            document.getElementById('postName').value = "";
-            document.getElementById('postUrl').value = "";
+            await addDoc(collection(db, "requests"), { name: n, imageUrl: u, timestamp: serverTimestamp(), uid: auth.currentUser.uid });
+            document.getElementById('postName').value = ""; document.getElementById('postUrl').value = "";
         };
     </script>
 </body>
-
 </html>
